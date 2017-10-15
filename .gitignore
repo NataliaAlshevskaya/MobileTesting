@@ -1,0 +1,6 @@
+*.class
+*.json
+*.iml
+ShoppingList/.idea/*
+ShoppingList/allure-results/*
+ShoppingList/target/*
