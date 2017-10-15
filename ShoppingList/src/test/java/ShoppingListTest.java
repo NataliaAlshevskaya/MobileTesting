@@ -347,34 +347,4 @@ public class ShoppingListTest {
         Assert.assertEquals(resultListTitle.getText(), "aaa");
 
     }
-
-//    @Test (description = "Check change order settings button.")
-//    public void checkChangeOrderSettingsTest(){
-//        //three point button
-//        driver.findElement(By.id("com.slava.buylist:id/button1")).click();
-//        //settings button
-//        driver.findElement(By.xpath("//android.widget.ListView[1]/android.widget.LinearLayout[1]")).click();
-//
-//        UiScrollable appViews1 = new UiScrollable(newUiSelector().scrollable(true));
-//
-//
-//        //category button
-//        WebElement categoryButton = (new WebDriverWait(driver, 10))
-//                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[8]/android.widget.RelativeLayout[1]")));
-//        categoryButton.click();
-
-        //add category button
-//        WebElement addCategoryButton = driver.findElement(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.Button[1]"));
-//        addCategoryButton.click();
-//
-//        WebElement addCategoryName = (new WebDriverWait(driver, 10))
-//                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.EditText[1]")));
-//        addCategoryName.sendKeys("NewCategoryName");
-//        driver.findElement(By.id("android:id/button1")).click();
-//
-//        WebElement addColorToCategory = (new WebDriverWait(driver, 10))
-//                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[13]/android.widget.RelativeLayout[1]/android.widget.ImageView[2]")));
-//        addColorToCategory.click();
-
-//    }
 }
