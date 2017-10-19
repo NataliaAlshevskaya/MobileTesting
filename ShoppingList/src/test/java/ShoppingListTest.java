@@ -1,4 +1,5 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidKeyCode;
 import org.openqa.selenium.By;
@@ -11,6 +12,8 @@ import org.testng.annotations.*;
 import org.testng.Assert;
 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 
@@ -22,8 +25,20 @@ public class ShoppingListTest {
                 "android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.RelativeLayout[%d]/" +
                 "android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]/android.widget.TextView[%d]";
 
-    @BeforeTest
-    public void setUp()throws Exception {
+    private void callShellCommand(String command){
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeClass
+    public void suiteSetUp()throws Exception {
         /* Here we specify the capabilities required by the Appium server.
         * We have already specified most of these manually through the
         * Appium server interface (apk path and etc.)
@@ -32,7 +47,6 @@ public class ShoppingListTest {
         capabilities.setCapability("deviceName", "AndroidTestDevice");
         capabilities.setCapability("platformName","Android");
         capabilities.setCapability("app", "/Users/grid/MobileTesting/Shopping_list_1.6.apk");
-
 
         /* We initialize Appium driver that will connect us to the Android device with
         * the capabilities we have just set. The URL we are providing is telling Appium we
@@ -44,8 +58,14 @@ public class ShoppingListTest {
 
     }
 
+    @BeforeMethod
+    public void setUp(){
+        callShellCommand("adb shell pm clear com.slava.buylist");
+        callShellCommand("adb shell am start -n com.slava.buylist/com.slava.buylist.MainActivity");
+    }
+
     /* We disable the driver after  the test has been executed. */
-    @AfterTest
+    @AfterClass
     public void tearDown() throws Exception {
         driver.quit();
     }
@@ -348,23 +368,24 @@ public class ShoppingListTest {
 
     }
 
-//    @Test (description = "Check change order settings button.")
-//    public void checkChangeOrderSettingsTest(){
+
+
+
+
+//    @Test (description = "Check add category settings.")
+//    public void checkAddNewCategoryButtonTest() throws Exception {
 //        //three point button
 //        driver.findElement(By.id("com.slava.buylist:id/button1")).click();
 //        //settings button
 //        driver.findElement(By.xpath("//android.widget.ListView[1]/android.widget.LinearLayout[1]")).click();
 //
-//        UiScrollable appViews1 = new UiScrollable(newUiSelector().scrollable(true));
-//
-//
 //        //category button
-//        WebElement categoryButton = (new WebDriverWait(driver, 10))
-//                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[8]/android.widget.RelativeLayout[1]")));
-//        categoryButton.click();
-
-        //add category button
-//        WebElement addCategoryButton = driver.findElement(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.Button[1]"));
+//        By categoryButton = By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.LinearLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[9]");
+//        scrollToElement(categoryButton);
+//        driver.findElement(categoryButton).click();
+//
+//        //  add category button
+//        WebElement addCategoryButton = driver.findElement(By.id("com.slava.buylist:id/button2"));
 //        addCategoryButton.click();
 //
 //        WebElement addCategoryName = (new WebDriverWait(driver, 10))
@@ -372,9 +393,42 @@ public class ShoppingListTest {
 //        addCategoryName.sendKeys("NewCategoryName");
 //        driver.findElement(By.id("android:id/button1")).click();
 //
-//        WebElement addColorToCategory = (new WebDriverWait(driver, 10))
-//                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[13]/android.widget.RelativeLayout[1]/android.widget.ImageView[2]")));
-//        addColorToCategory.click();
-
+////        WebElement addColorToCategory = (new WebDriverWait(driver, 10))
+////                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[13]/android.widget.RelativeLayout[1]/android.widget.ImageView[2]")));
+////        addColorToCategory.click();
+//
+//        By newCategoryElementBy = By.xpath("//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.LinearLayout[12]/android.widget.RelativeLayout[1]/android.widget.TextView[1]");
+//
+//        Boolean isFoundElement;
+//        isFoundElement = driver.findElements(newCategoryElementBy).size() > 0;
+//        while (isFoundElement == false) {
+//            swipeVertical((AppiumDriver) driver, 0.9, 0.1, 0.5, 2000);
+//            isFoundElement = driver.findElements(newCategoryElementBy).size() > 0;
+//        }
+//        //when this line doesn't scroll in previous part
+//        driver.findElement(newCategoryElementBy).click();
+//
+//
+////        scrollToElement(newCategoryElementBy);
+////        WebElement newCategoryElement = driver.findElement(newCategoryElementBy);
+////        Assert.assertEquals(newCategoryElement.getText(),"NewCategoryName");
+//
+//    }
+//
+//    public void scrollToElement(By my_element) throws Exception {
+//        Boolean isFoundElement;
+//        isFoundElement = driver.findElements(my_element).size() > 0;
+//        while (isFoundElement == false){
+//            swipeVertical((AppiumDriver) driver,0.9,0.1,0.5,2000);
+//            isFoundElement = driver.findElements(my_element).size() > 0;
+//        }
+//    }
+//
+//    public static void swipeVertical(AppiumDriver driver, double startPercentage, double finalPercentage, double anchorPercentage, int duration) throws Exception {
+//        Dimension size = driver.manage().window().getSize();
+//        int anchor = (int) (size.width * anchorPercentage);
+//        int startPoint = (int) (size.height * startPercentage);
+//        int endPoint = (int) (size.height * finalPercentage);
+//        new TouchAction(driver).press(anchor, startPoint).waitAction(duration).moveTo(anchor, endPoint).release().perform();
 //    }
 }
