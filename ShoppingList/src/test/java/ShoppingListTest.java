@@ -368,10 +368,6 @@ public class ShoppingListTest {
 
     }
 
-
-
-
-
 //    @Test (description = "Check add category settings.")
 //    public void checkAddNewCategoryButtonTest() throws Exception {
 //        //three point button
