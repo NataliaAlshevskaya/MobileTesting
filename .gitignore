@@ -4,3 +4,4 @@
 ShoppingList/.idea/*
 ShoppingList/allure-results/*
 ShoppingList/target/*
+*.DS_Store
