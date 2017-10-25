@@ -1,55 +1,55 @@
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
-
 import java.util.List;
 
 public class ProductListPage extends PageObject{
-    @FindBy(id="editText1")
-    private WebElement productName;
+    @AndroidFindBy(id="editText1")
+    private AndroidElement productName;
 
-    @FindBy(id="editText2")
-    private WebElement itemPrice;
+    @AndroidFindBy(id="editText2")
+    private AndroidElement itemPrice;
 
-    @FindBy(id="editText3")
-    private WebElement amount;
+    @AndroidFindBy(id="editText3")
+    private AndroidElement amount;
 
-    @FindBy(id="editText4")
-    private WebElement comment;
+    @AndroidFindBy(id="editText4")
+    private AndroidElement comment;
 
-    @FindBy(id="button1")
-    private WebElement threePointButton;
+    @AndroidFindBy(id="button1")
+    private AndroidElement threePointButton;
 
-    @FindBy(id="button2")
-    private WebElement plusButton;
+    @AndroidFindBy(id="button2")
+    private AndroidElement plusButton;
 
-    @FindBy(id="value")
-    private WebElement priceCurrency;
+    @AndroidFindBy(id="value")
+    private AndroidElement priceCurrency;
 
-    @FindBy(id="spinner1")
-    private WebElement amountDimension;
+    @AndroidFindBy(id="spinner1")
+    private AndroidElement amountDimension;
 
-    @FindBy(id="spinner2")
-    private WebElement category;
+    @AndroidFindBy(id="spinner2")
+    private AndroidElement category;
 
-    @FindBy(id="textView2")
-    private WebElement totalText;
+    @AndroidFindBy(id="textView2")
+    private AndroidElement totalText;
 
-    @FindBy(id="title")
-    private List<WebElement> productNameInList;
+    @AndroidFindBy(id="title")
+    private List<AndroidElement> productNameInList;
 
-    @FindBy(id="str1")
-    private List<WebElement> commentInList;
+    @AndroidFindBy(id="str1")
+    private List<AndroidElement> commentInList;
 
-    @FindBy(id="TextView01")
-    private List<WebElement> amountInList;
+    @AndroidFindBy(id="TextView01")
+    private List<AndroidElement> amountInList;
 
-    @FindBy(id="textView1")
-    private List<WebElement> priceInList;
+    @AndroidFindBy(id="textView1")
+    private List<AndroidElement> priceInList;
 
-    public ProductListPage(AppiumDriver driver) {
+    public ProductListPage(AndroidDriver<AndroidElement> driver) {
         super(driver);
         Assert.assertTrue(plusButton.isDisplayed());
     }
@@ -64,10 +64,6 @@ public class ProductListPage extends PageObject{
 
     public void setAmount(String amount){
         this.amount.sendKeys(amount);
-    }
-
-    public void setAmountDimention(String amountDimention){
-
     }
 
     public void setComment(String comment){
@@ -86,69 +82,76 @@ public class ProductListPage extends PageObject{
         this.category.click();
     }
 
-    public WebElement getItemPrice(){
+    public AndroidElement getItemPrice(){
         return this.itemPrice;
     }
 
-    public WebElement getPriceCurrency(){
+    public AndroidElement getPriceCurrency(){
         return this.priceCurrency;
     }
 
-    public WebElement getAmount(){
+    public AndroidElement getAmount(){
         return this.amount;
     }
 
-    public WebElement getAmountDimention(){
+    public AndroidElement getAmountDimention(){
         return this.amountDimension;
     }
 
-    public WebElement getComment(){
+    public AndroidElement getComment(){
         return this.comment;
     }
 
-    public WebElement getCategory(){
+    public AndroidElement getCategory(){
         return this.category;
     }
 
-    public WebElement getTotalText(){
+    public AndroidElement getTotalText(){
         return this.totalText;
     }
 
-    private WebElement getElement(String text, List<WebElement> list){
-        for(WebElement element: list){
+    private AndroidElement getElement(String text, List<AndroidElement> list){
+        for(AndroidElement element: list){
             if(element.getText().equalsIgnoreCase(text)){
                 return element;
             }
         }
         return null;
     }
-    public WebElement getCommentInList(String comment){
+    public AndroidElement getCommentInList(String comment){
         return getElement(comment, this.commentInList);
     }
 
-    public WebElement getProductNameInList(String title){
+    public AndroidElement getProductNameInList(String title){
         return getElement(title, this.productNameInList);
     }
 
-    public WebElement getAmountInList(String amount){
+    public AndroidElement getAmountInList(String amount){
         return getElement(amount, this.amountInList);
     }
 
-    public WebElement getPriceInList(String price){
+    public AndroidElement getPriceInList(String price){
         return getElement(price, this.priceInList);
+    }
+
+    public List<AndroidElement> getProductNames(){
+        return this.productNameInList;
     }
 
 
     public boolean doesItemPriceExist(){
-        try{
-            driver.findElement(By.id("com.slava.buylist:id/editText2"));
-            return true;
-        } catch (Exception e){
-            return false;
-        }
+        return super.doesItemExist("com.slava.buylist:id/editText2");
     }
 
     public void clickThreePointButton() {
         this.threePointButton.click();
+    }
+
+    public void removeKeyboard(){
+        super.androidBackspase();
+    }
+
+    public void returnToBuyListsPage(){
+        super.androidBackspase();
     }
 }

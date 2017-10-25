@@ -1,12 +1,35 @@
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.WebDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.AndroidKeyCode;
+import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import org.openqa.selenium.By;
 import org.openqa.selenium.support.PageFactory;
 
-public class PageObject {
-    protected AppiumDriver driver;
+import java.util.concurrent.TimeUnit;
 
-    public PageObject(AppiumDriver driver){
+public class PageObject {
+    AndroidDriver<AndroidElement> driver;
+
+    public PageObject(AndroidDriver<AndroidElement> driver){
         this.driver = driver;
-        PageFactory.initElements(driver, this);
+        PageFactory.initElements(new AppiumFieldDecorator(driver, 30, TimeUnit.SECONDS), this);
+    }
+
+    public boolean doesItemExist(String id){
+        try{
+            driver.findElement(By.id(id));
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean isInitialized(AndroidElement element){
+        return element.isDisplayed();
+    }
+
+    public void androidBackspase(){
+        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
     }
 }

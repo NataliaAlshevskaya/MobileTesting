@@ -1,44 +1,46 @@
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.WebElement;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 import java.util.List;
 
 public class BuyListsPage extends PageObject{
-    @FindBy(id="button2")
-    private WebElement plusButton;
+    @AndroidFindBy(id="button2")
+    private AndroidElement plusButton;
 
-    @FindBy(id="button1")
-    private WebElement confirm;
+    @AndroidFindBy(id="button1")
+    private AndroidElement confirm;
 
-    @FindBy(id="editText1")
-    private WebElement listName;
+    @AndroidFindBy(id="editText1")
+    private AndroidElement listName;
 
-    @FindBy(id="title")
-    private List<WebElement> listTitle;
+    @AndroidFindBy(id="title")
+    private List<AndroidElement> listTitle;
 
-    @FindBy(id="str1")
-    private List<WebElement> listInfoText;
+    @AndroidFindBy(id="str1")
+    private List<AndroidElement> listInfoText;
 
-    @FindBy(id="imageView2")
-    private List<WebElement> editInList;
+    @AndroidFindBy(id="imageView2")
+    private List<AndroidElement> editInList;
 
-    @FindBy(id="imageView1")
-    private List<WebElement> deleteInList;
+    @AndroidFindBy(id="imageView1")
+    private List<AndroidElement> deleteInList;
 
-    @FindBy(xpath="//android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.EditText[1]")
-//    @FindBy(className="EditText")
-    private WebElement newListName;
+    @AndroidFindBy(xpath="//android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.EditText[1]")
+//    @AndroidFindBy(className="android.widget.EditText")
+    private AndroidElement newListName;
 
-    public BuyListsPage(AppiumDriver driver) {
+    public BuyListsPage(AndroidDriver<AndroidElement> driver) {
         super(driver);
-        Assert.assertTrue(listName.isDisplayed());
+//        Assert.assertTrue(listName.isDisplayed());
     }
 
 
-    public WebElement getListTitle(String titleText) {
-        for(WebElement title: this.listTitle){
+    public AndroidElement getListTitle(String titleText) {
+        for(AndroidElement title: this.listTitle){
             if(title.getText().equalsIgnoreCase(titleText)) {
                 return title;
             }
@@ -46,8 +48,8 @@ public class BuyListsPage extends PageObject{
         return null;
     }
 
-    public WebElement getListInfoText(String titleInfoTextSubstring) {
-        for(WebElement infoText: this.listInfoText){
+    public AndroidElement getListInfoText(String titleInfoTextSubstring) {
+        for(AndroidElement infoText: this.listInfoText){
             if(infoText.getText().contains(titleInfoTextSubstring)){
                 return infoText;
             }

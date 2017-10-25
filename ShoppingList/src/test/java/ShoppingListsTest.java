@@ -1,7 +1,6 @@
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidKeyCode;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
@@ -15,15 +14,11 @@ import java.net.URL;
 
 public class ShoppingListsTest {
 
-    AppiumDriver driver;
+    AndroidDriver driver;
     BuyListsPage buyListPage;
     ProductListPage productListPage;
     SettingsPage settingPage;
     OptionsSpinnerPage optionPage;
-
-    private static final String productListXpath = "//android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/" +
-                "android.widget.RelativeLayout[1]/android.widget.ListView[1]/android.widget.RelativeLayout[%d]/" +
-                "android.widget.LinearLayout[1]/android.widget.RelativeLayout[1]/android.widget.TextView[%d]";
 
 
     private void callShellCommand(String command){
@@ -37,19 +32,7 @@ public class ShoppingListsTest {
         }
     }
 
-    private boolean doesExists(WebElement element){
-        System.out.println(element);
-        System.out.println(element.getTagName());
-
-        if (element != null){
-            if (element.isDisplayed()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @BeforeClass
+    @BeforeSuite
     public void suiteSetUp()throws Exception {
         /* Here we specify the capabilities required by the Appium server.
         * We have already specified most of these manually through the
@@ -76,6 +59,9 @@ public class ShoppingListsTest {
     public void setUp(){
         callShellCommand("adb shell pm clear com.slava.buylist");
         callShellCommand("adb shell am start -n com.slava.buylist/com.slava.buylist.MainActivity");
+        buyListPage.setListName("firstList");
+        buyListPage.addList();
+
     }
 
     /* We disable the driver after  the test has been executed. */
@@ -86,24 +72,18 @@ public class ShoppingListsTest {
 
     @Test (description = "Create two new lists and inspect main page list.")
     public void checkListOfBuyListsTest(){
-
-        buyListPage = new BuyListsPage(driver);
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
         productListPage.setProductName("try");
         productListPage.setItemPrice("5");
         productListPage.addProduct();
 
-
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        productListPage.removeKeyboard();
+        productListPage.returnToBuyListsPage();
 
         buyListPage.setListName("secondList");
         buyListPage.addList();
 
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        productListPage.removeKeyboard();
+        productListPage.returnToBuyListsPage();
 
         WebElement firstListText = buyListPage.getListTitle("firstList");
         Assert.assertTrue(firstListText.isDisplayed());
@@ -120,11 +100,6 @@ public class ShoppingListsTest {
 
     @Test (description = "Create a product and check appeared detailed fields.")
     public void checkAppearedProductDetailFieldsTest(){
-
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
-
         //Add product name with just 2 letters.
         productListPage.setProductName("tr");
         Assert.assertTrue(!productListPage.doesItemPriceExist());
@@ -143,11 +118,6 @@ public class ShoppingListsTest {
 
     @Test (description = "Create 3 products in one list and inspect list page.")
     public void checkListOfProductsTest(){
-
-        buyListPage = new BuyListsPage(driver);
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
         productListPage.setProductName("try");
         productListPage.setItemPrice("5");
         productListPage.setAmount("3");
@@ -171,7 +141,7 @@ public class ShoppingListsTest {
 
 
         // Check final list page.
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        productListPage.removeKeyboard();
 
         Assert.assertEquals(productListPage.getTotalText().getText(), "Total: 65 £");
 
@@ -188,12 +158,8 @@ public class ShoppingListsTest {
 
     @Test (description = "Check edit list name button on main page.")
     public void checkEditListButtonTest(){
-        buyListPage = new BuyListsPage(driver);
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        productListPage.removeKeyboard();
+        productListPage.returnToBuyListsPage();
 
         buyListPage.setNewListName("SecondNameForFirstList");
 
@@ -202,11 +168,9 @@ public class ShoppingListsTest {
 
     @Test (description = "Check delete list button on main page.")
     public void checkDeleteListButtonTest(){
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
 
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        productListPage.removeKeyboard();
+        productListPage.returnToBuyListsPage();
 
         buyListPage.deleteList();
          Assert.assertNull(buyListPage.getListTitle("firstList"));
@@ -214,10 +178,6 @@ public class ShoppingListsTest {
 
     @Test (description = "Settings -> change currency option.")
     public void checkChangeCurrencyFunctionTest(){
-
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
         // Product with filled all possible fields.
         productListPage.setProductName("try");
         productListPage.setItemPrice("5");
@@ -231,7 +191,7 @@ public class ShoppingListsTest {
         settingPage.setSetting("Currency");
         optionPage.setOption("$");
 
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        settingPage.returnBackFromSettings();
         Assert.assertTrue(productListPage.getPriceInList("5 $").isDisplayed());
 
         productListPage.setProductName("try");
@@ -240,9 +200,6 @@ public class ShoppingListsTest {
 
     @Test (description = "Check change order settings button.")
     public void checkChangeOrderSettingsTest(){
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
-
         productListPage.setProductName("aaa");
         productListPage.setItemPrice("5");
         productListPage.addProduct();
@@ -257,21 +214,20 @@ public class ShoppingListsTest {
 
         //three point button
         productListPage.clickThreePointButton();
+        Assert.assertTrue(settingPage.isInitialized());
+        settingPage = new SettingsPage(driver);
         settingPage.setSetting("Settings");
 
 
         settingPage.setSetting("Sort list");
         optionPage.setOption("In a pre-order");
 
-        ((AndroidDriver) driver).pressKeyCode(AndroidKeyCode.BACK);
+        settingPage.returnBackFromSettings();
 
-        //inspect from here
-        WebElement resultListTitle = driver.findElement(By.xpath(String.format(productListXpath, 1, 1)));
-        Assert.assertEquals(resultListTitle.getText(), "ccc");
-        resultListTitle = driver.findElement(By.xpath(String.format(productListXpath, 2, 1)));
-        Assert.assertEquals(resultListTitle.getText(), "bbb");
-        resultListTitle = driver.findElement(By.xpath(String.format(productListXpath, 3, 1)));
-        Assert.assertEquals(resultListTitle.getText(), "aaa");
-
+        Assert.assertEquals(productListPage.getProductNames().get(0).getText(),"ccc");
+        Assert.assertEquals(productListPage.getProductNames().get(1).getText(),"bbb");
+        Assert.assertEquals(productListPage.getProductNames().get(2).getText(),"aaa");
     }
+    
+    
 }
