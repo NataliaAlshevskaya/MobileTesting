@@ -1,7 +1,4 @@
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidKeyCode;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
 import org.testng.Assert;
@@ -53,15 +50,8 @@ public class ShoppingListsTest {
         productListPage = new ProductListPage(driver);
         optionPage = new OptionsSpinnerPage(driver);
         settingPage = new SettingsPage(driver);
-    }
-
-    @BeforeMethod
-    public void setUp(){
-        callShellCommand("adb shell pm clear com.slava.buylist");
-        callShellCommand("adb shell am start -n com.slava.buylist/com.slava.buylist.MainActivity");
         buyListPage.setListName("firstList");
         buyListPage.addList();
-
     }
 
     /* We disable the driver after  the test has been executed. */
@@ -70,41 +60,12 @@ public class ShoppingListsTest {
         driver.quit();
     }
 
-    @Test (description = "Create two new lists and inspect main page list.")
-    public void checkListOfBuyListsTest(){
-        productListPage.setProductName("try");
-        productListPage.setItemPrice("5");
-        productListPage.addProduct();
-
-        productListPage.removeKeyboard();
-        productListPage.returnToBuyListsPage();
-
-        buyListPage.setListName("secondList");
-        buyListPage.addList();
-
-        productListPage.removeKeyboard();
-        productListPage.returnToBuyListsPage();
-
-        WebElement firstListText = buyListPage.getListTitle("firstList");
-        Assert.assertTrue(firstListText.isDisplayed());
-
-        WebElement firstListUnderText = buyListPage.getListInfoText("All items: 1 Sum: 5 £ Date:");
-        Assert.assertTrue(firstListUnderText.isDisplayed());
-
-
-        WebElement secondListText = buyListPage.getListTitle("secondList");
-        Assert.assertTrue(secondListText.isDisplayed());
-        WebElement secondListUnderText = buyListPage.getListInfoText("All items: 0 Sum: 0 £ Date:");
-        Assert.assertTrue(secondListUnderText.isDisplayed());
-    }
-
     @Test (description = "Create a product and check appeared detailed fields.")
     public void checkAppearedProductDetailFieldsTest(){
-        //Add product name with just 2 letters.
-        productListPage.setProductName("tr");
+        productListPage.setProductName("aa");
         Assert.assertTrue(!productListPage.doesItemPriceExist());
 
-        productListPage.setProductName("try");
+        productListPage.setProductName("aaa");
 
         Assert.assertTrue(productListPage.doesItemPriceExist());
         Assert.assertTrue(productListPage.getItemPrice().isDisplayed());
@@ -116,12 +77,11 @@ public class ShoppingListsTest {
 
     }
 
-    @Test (description = "Create 3 products in one list and inspect list page.")
+    @Test (dependsOnMethods = { "checkAppearedProductDetailFieldsTest" },
+            description = "Create 3 products in one list and inspect list page.")
     public void checkListOfProductsTest(){
-        productListPage.setProductName("try");
         productListPage.setItemPrice("5");
         productListPage.setAmount("3");
-
 
         productListPage.openDimentionPage();
         optionPage.setOption("pack");
@@ -131,12 +91,12 @@ public class ShoppingListsTest {
         productListPage.addProduct();
 
         // Product with filled only name and price.
-        productListPage.setProductName("try1");
+        productListPage.setProductName("bbb");
         productListPage.setItemPrice("50");
         productListPage.addProduct();
 
         // Product with filled only name.
-        productListPage.setProductName("try2");
+        productListPage.setProductName("ccc");
         productListPage.addProduct();
 
 
@@ -145,48 +105,23 @@ public class ShoppingListsTest {
 
         Assert.assertEquals(productListPage.getTotalText().getText(), "Total: 65 £");
 
-        Assert.assertTrue(productListPage.getProductNameInList("try").isDisplayed());
+        Assert.assertTrue(productListPage.getProductNameInList("aaa").isDisplayed());
         Assert.assertTrue(productListPage.getCommentInList("Some comment").isDisplayed());
         Assert.assertTrue(productListPage.getAmountInList("3 pack").isDisplayed());
         Assert.assertTrue(productListPage.getPriceInList("5 £").isDisplayed());
 
-        Assert.assertTrue(productListPage.getProductNameInList("try1").isDisplayed());
+        Assert.assertTrue(productListPage.getProductNameInList("bbb").isDisplayed());
         Assert.assertTrue(productListPage.getPriceInList("50 £").isDisplayed());
 
-        Assert.assertTrue(productListPage.getProductNameInList("try2").isDisplayed());
+        Assert.assertTrue(productListPage.getProductNameInList("ccc").isDisplayed());
     }
 
-    @Test (description = "Check edit list name button on main page.")
-    public void checkEditListButtonTest(){
-        productListPage.removeKeyboard();
-        productListPage.returnToBuyListsPage();
-
-        buyListPage.setNewListName("SecondNameForFirstList");
-
-        Assert.assertTrue(buyListPage.getListTitle("firstListSecondNameForFirstList").isDisplayed());
-    }
-
-    @Test (description = "Check delete list button on main page.")
-    public void checkDeleteListButtonTest(){
-
-        productListPage.removeKeyboard();
-        productListPage.returnToBuyListsPage();
-
-        buyListPage.deleteList();
-         Assert.assertNull(buyListPage.getListTitle("firstList"));
-    }
-
-    @Test (description = "Settings -> change currency option.")
+    @Test (dependsOnMethods = { "checkListOfProductsTest" },
+            description = "Settings -> change currency option.")
     public void checkChangeCurrencyFunctionTest(){
-        // Product with filled all possible fields.
-        productListPage.setProductName("try");
-        productListPage.setItemPrice("5");
-        productListPage.setAmount("3");
-        productListPage.addProduct();
-
-        Assert.assertEquals(productListPage.getTotalText().getText(),"Total: 15 £");
 
         productListPage.clickThreePointButton();
+        Assert.assertTrue(settingPage.isInitialized());
         settingPage.setSetting("Settings");
         settingPage.setSetting("Currency");
         optionPage.setOption("$");
@@ -196,29 +131,16 @@ public class ShoppingListsTest {
 
         productListPage.setProductName("try");
         Assert.assertEquals(productListPage.getPriceCurrency().getText(),"$  ");
-        }
+        productListPage.setProductName("");
+    }
 
-    @Test (description = "Check change order settings button.")
+    @Test (dependsOnMethods = { "checkChangeCurrencyFunctionTest" },
+            description = "Check change order settings button.")
     public void checkChangeOrderSettingsTest(){
-        productListPage.setProductName("aaa");
-        productListPage.setItemPrice("5");
-        productListPage.addProduct();
-
-        productListPage.setProductName("bbb");
-        productListPage.setItemPrice("5");
-        productListPage.addProduct();
-
-        productListPage.setProductName("ccc");
-        productListPage.setItemPrice("15");
-        productListPage.addProduct();
-
-        //three point button
         productListPage.clickThreePointButton();
         Assert.assertTrue(settingPage.isInitialized());
         settingPage = new SettingsPage(driver);
         settingPage.setSetting("Settings");
-
-
         settingPage.setSetting("Sort list");
         optionPage.setOption("In a pre-order");
 
@@ -228,6 +150,37 @@ public class ShoppingListsTest {
         Assert.assertEquals(productListPage.getProductNames().get(1).getText(),"bbb");
         Assert.assertEquals(productListPage.getProductNames().get(2).getText(),"aaa");
     }
-    
-    
+
+
+    @Test (dependsOnMethods = { "checkChangeOrderSettingsTest" },
+            description = "Create two new lists and inspect main page list.")
+    public void checkListOfBuyListsTest(){
+        productListPage.returnToBuyListsPage();
+
+        buyListPage.setListName("secondList");
+        buyListPage.addList();
+
+        productListPage.removeKeyboard();
+        productListPage.returnToBuyListsPage();
+
+        Assert.assertTrue(buyListPage.getListTitle("firstList").isDisplayed());
+        Assert.assertTrue(buyListPage.getListInfoText("All items: 3 Sum: 65 $ Date:").isDisplayed());
+        Assert.assertTrue(buyListPage.getListTitle("secondList").isDisplayed());
+        Assert.assertTrue(buyListPage.getListInfoText("All items: 0 Sum: 0 $ Date:").isDisplayed());
+    }
+
+    @Test (dependsOnMethods = { "checkListOfBuyListsTest" },
+            description = "Check edit list name button on main page.")
+    public void checkEditListButtonTest(){
+        buyListPage.setNewListName("SecondNameForFirstList");
+
+        Assert.assertTrue(buyListPage.getListTitle("firstListSecondNameForFirstList").isDisplayed());
+    }
+
+    @Test (dependsOnMethods = { "checkEditListButtonTest" },
+            description = "Check delete list button on main page.")
+    public void checkDeleteListButtonTest(){
+        buyListPage.deleteList();
+         Assert.assertNull(buyListPage.getListTitle("firstListSecondNameForFirstList"));
+    }
 }

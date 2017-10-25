@@ -1,8 +1,6 @@
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 import java.util.List;
@@ -29,13 +27,12 @@ public class BuyListsPage extends PageObject{
     @AndroidFindBy(id="imageView1")
     private List<AndroidElement> deleteInList;
 
-    @AndroidFindBy(xpath="//android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.FrameLayout[1]/android.widget.FrameLayout[1]/android.widget.LinearLayout[1]/android.widget.EditText[1]")
-//    @AndroidFindBy(className="android.widget.EditText")
+    @AndroidFindBy(className="android.widget.EditText")
     private AndroidElement newListName;
 
     public BuyListsPage(AndroidDriver<AndroidElement> driver) {
         super(driver);
-//        Assert.assertTrue(listName.isDisplayed());
+        Assert.assertTrue(listName.isDisplayed());
     }
 
 
