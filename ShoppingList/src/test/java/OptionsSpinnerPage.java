@@ -16,9 +16,9 @@ public class OptionsSpinnerPage extends PageObject{
         return super.isInitialized(option.get(0));
     }
 
-    public void setOption(String option){
-        for(AndroidElement optionElement: this.option){
-            if(optionElement.getText().equalsIgnoreCase(option)){
+    public void setOption(String optionToBeSet){
+        for(AndroidElement optionElement: option){
+            if(optionElement.getText().equalsIgnoreCase(optionToBeSet)){
                 optionElement.click();
                 break;
             }

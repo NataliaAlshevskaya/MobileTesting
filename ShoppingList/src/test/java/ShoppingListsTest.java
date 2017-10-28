@@ -1,11 +1,10 @@
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
-import org.testng.Assert;
-
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import java.net.URL;
 
 
@@ -17,41 +16,10 @@ public class ShoppingListsTest {
     SettingsPage settingPage;
     OptionsSpinnerPage optionPage;
 
-
-    private void callShellCommand(String command){
-        Process p;
-        try {
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            new BufferedReader(new InputStreamReader(p.getInputStream()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @BeforeSuite
     public void suiteSetUp()throws Exception {
-        /* Here we specify the capabilities required by the Appium server.
-        * We have already specified most of these manually through the
-        * Appium server interface (apk path and etc.)
-        */
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("deviceName", "AndroidTestDevice");
-        capabilities.setCapability("platformName","Android");
-        capabilities.setCapability("app", "/Users/grid/MobileTesting/Shopping_list_1.6.apk");
-
-        /* We initialize Appium driver that will connect us to the Android device with
-        * the capabilities we have just set. The URL we are providing is telling Appium we
-        * are going to run the test locally.
-        */
-
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-        buyListPage = new BuyListsPage(driver);
-        productListPage = new ProductListPage(driver);
-        optionPage = new OptionsSpinnerPage(driver);
-        settingPage = new SettingsPage(driver);
-        buyListPage.setListName("firstList");
-        buyListPage.addList();
+        setUpDriver();
+        setUpPagesToBeTested();
     }
 
     /* We disable the driver after  the test has been executed. */
@@ -62,18 +30,21 @@ public class ShoppingListsTest {
 
     @Test (description = "Create a product and check appeared detailed fields.")
     public void checkAppearedProductDetailFieldsTest(){
+        buyListPage.setListName("firstList");
+        buyListPage.addList();
+
         productListPage.setProductName("aa");
-        Assert.assertTrue(!productListPage.doesItemPriceExist());
+        assertFalse(productListPage.doesItemPriceExist());
 
         productListPage.setProductName("aaa");
 
-        Assert.assertTrue(productListPage.doesItemPriceExist());
-        Assert.assertTrue(productListPage.getItemPrice().isDisplayed());
-        Assert.assertTrue(productListPage.getPriceCurrency().isDisplayed());
-        Assert.assertEquals(productListPage.getPriceCurrency().getText(),"£  ");
-        Assert.assertTrue(productListPage.getAmount().isDisplayed());
-        Assert.assertTrue(productListPage.getAmountDimention().isDisplayed());
-        Assert.assertTrue(productListPage.getCategory().isDisplayed());
+        assertTrue(productListPage.doesItemPriceExist());
+        assertTrue(productListPage.getItemPrice().isDisplayed());
+        assertTrue(productListPage.getPriceCurrency().isDisplayed());
+        assertEquals(productListPage.getPriceCurrency().getText(),"£  ");
+        assertTrue(productListPage.getAmount().isDisplayed());
+        assertTrue(productListPage.getAmountDimention().isDisplayed());
+        assertTrue(productListPage.getCategory().isDisplayed());
 
     }
 
@@ -103,17 +74,17 @@ public class ShoppingListsTest {
         // Check final list page.
         productListPage.removeKeyboard();
 
-        Assert.assertEquals(productListPage.getTotalText().getText(), "Total: 65 £");
+        assertEquals(productListPage.getTotalText().getText(), "Total: 65 £");
 
-        Assert.assertTrue(productListPage.getProductNameInList("aaa").isDisplayed());
-        Assert.assertTrue(productListPage.getCommentInList("Some comment").isDisplayed());
-        Assert.assertTrue(productListPage.getAmountInList("3 pack").isDisplayed());
-        Assert.assertTrue(productListPage.getPriceInList("5 £").isDisplayed());
+        assertTrue(productListPage.getProductNameInList("aaa").isDisplayed());
+        assertTrue(productListPage.getCommentInList("Some comment").isDisplayed());
+        assertTrue(productListPage.getAmountInList("3 pack").isDisplayed());
+        assertTrue(productListPage.getPriceInList("5 £").isDisplayed());
 
-        Assert.assertTrue(productListPage.getProductNameInList("bbb").isDisplayed());
-        Assert.assertTrue(productListPage.getPriceInList("50 £").isDisplayed());
+        assertTrue(productListPage.getProductNameInList("bbb").isDisplayed());
+        assertTrue(productListPage.getPriceInList("50 £").isDisplayed());
 
-        Assert.assertTrue(productListPage.getProductNameInList("ccc").isDisplayed());
+        assertTrue(productListPage.getProductNameInList("ccc").isDisplayed());
     }
 
     @Test (dependsOnMethods = { "checkListOfProductsTest" },
@@ -121,16 +92,16 @@ public class ShoppingListsTest {
     public void checkChangeCurrencyFunctionTest(){
 
         productListPage.clickThreePointButton();
-        Assert.assertTrue(settingPage.isInitialized());
+        assertTrue(settingPage.isInitialized());
         settingPage.setSetting("Settings");
         settingPage.setSetting("Currency");
         optionPage.setOption("$");
 
         settingPage.returnBackFromSettings();
-        Assert.assertTrue(productListPage.getPriceInList("5 $").isDisplayed());
+        assertTrue(productListPage.getPriceInList("5 $").isDisplayed());
 
         productListPage.setProductName("try");
-        Assert.assertEquals(productListPage.getPriceCurrency().getText(),"$  ");
+        assertEquals(productListPage.getPriceCurrency().getText(),"$  ");
         productListPage.setProductName("");
     }
 
@@ -138,7 +109,7 @@ public class ShoppingListsTest {
             description = "Check change order settings button.")
     public void checkChangeOrderSettingsTest(){
         productListPage.clickThreePointButton();
-        Assert.assertTrue(settingPage.isInitialized());
+        assertTrue(settingPage.isInitialized());
         settingPage = new SettingsPage(driver);
         settingPage.setSetting("Settings");
         settingPage.setSetting("Sort list");
@@ -146,9 +117,9 @@ public class ShoppingListsTest {
 
         settingPage.returnBackFromSettings();
 
-        Assert.assertEquals(productListPage.getProductNames().get(0).getText(),"ccc");
-        Assert.assertEquals(productListPage.getProductNames().get(1).getText(),"bbb");
-        Assert.assertEquals(productListPage.getProductNames().get(2).getText(),"aaa");
+        assertEquals(productListPage.getProductNames().get(0).getText(),"ccc");
+        assertEquals(productListPage.getProductNames().get(1).getText(),"bbb");
+        assertEquals(productListPage.getProductNames().get(2).getText(),"aaa");
     }
 
 
@@ -163,10 +134,10 @@ public class ShoppingListsTest {
         productListPage.removeKeyboard();
         productListPage.returnToBuyListsPage();
 
-        Assert.assertTrue(buyListPage.getListTitle("firstList").isDisplayed());
-        Assert.assertTrue(buyListPage.getListInfoText("All items: 3 Sum: 65 $ Date:").isDisplayed());
-        Assert.assertTrue(buyListPage.getListTitle("secondList").isDisplayed());
-        Assert.assertTrue(buyListPage.getListInfoText("All items: 0 Sum: 0 $ Date:").isDisplayed());
+        assertTrue(buyListPage.getListTitle("firstList").isDisplayed());
+        assertTrue(buyListPage.getListInfoText("All items: 3 Sum: 65 $ Date:").isDisplayed());
+        assertTrue(buyListPage.getListTitle("secondList").isDisplayed());
+        assertTrue(buyListPage.getListInfoText("All items: 0 Sum: 0 $ Date:").isDisplayed());
     }
 
     @Test (dependsOnMethods = { "checkListOfBuyListsTest" },
@@ -174,13 +145,39 @@ public class ShoppingListsTest {
     public void checkEditListButtonTest(){
         buyListPage.setNewListName("SecondNameForFirstList");
 
-        Assert.assertTrue(buyListPage.getListTitle("firstListSecondNameForFirstList").isDisplayed());
+        assertTrue(buyListPage.getListTitle("firstListSecondNameForFirstList").isDisplayed());
     }
 
     @Test (dependsOnMethods = { "checkEditListButtonTest" },
             description = "Check delete list button on main page.")
     public void checkDeleteListButtonTest(){
         buyListPage.deleteList();
-         Assert.assertNull(buyListPage.getListTitle("firstListSecondNameForFirstList"));
+         assertNull(buyListPage.getListTitle("firstListSecondNameForFirstList"));
+    }
+
+
+    private void setUpDriver()throws Exception{
+        /* Here we specify the capabilities required by the Appium server.
+        * We have already specified most of these manually through the
+        * Appium server interface (apk path and etc.)
+        */
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("deviceName", "AndroidTestDevice");
+        capabilities.setCapability("platformName","Android");
+        capabilities.setCapability("app", "/Users/grid/MobileTesting/Shopping_list_1.6.apk");
+
+        /* We initialize Appium driver that will connect us to the Android device with
+        * the capabilities we have just set. The URL we are providing is telling Appium we
+        * are going to run the test locally.
+        */
+
+        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+    }
+
+    private void setUpPagesToBeTested(){
+        buyListPage = new BuyListsPage(driver);
+        productListPage = new ProductListPage(driver);
+        optionPage = new OptionsSpinnerPage(driver);
+        settingPage = new SettingsPage(driver);
     }
 }

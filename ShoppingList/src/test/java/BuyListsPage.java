@@ -37,7 +37,7 @@ public class BuyListsPage extends PageObject{
 
 
     public AndroidElement getListTitle(String titleText) {
-        for(AndroidElement title: this.listTitle){
+        for(AndroidElement title: listTitle){
             if(title.getText().equalsIgnoreCase(titleText)) {
                 return title;
             }
@@ -46,7 +46,7 @@ public class BuyListsPage extends PageObject{
     }
 
     public AndroidElement getListInfoText(String titleInfoTextSubstring) {
-        for(AndroidElement infoText: this.listInfoText){
+        for(AndroidElement infoText: listInfoText){
             if(infoText.getText().contains(titleInfoTextSubstring)){
                 return infoText;
             }
@@ -54,23 +54,23 @@ public class BuyListsPage extends PageObject{
         return null;
     }
 
-    public void setListName(String listName){
-        this.listName.sendKeys(listName);
+    public void setListName(String listNameToBeSet){
+        listName.sendKeys(listNameToBeSet);
     }
 
     public void addList(){
-        this.plusButton.click();
+        plusButton.click();
     }
 
     public void setNewListName(String newName){
         //TODO(nalshevskaia): find other better solution
-        this.editInList.get(0).click();
-        this.newListName.sendKeys(newName);
+        editInList.get(0).click();
+        newListName.sendKeys(newName);
         confirm.click();
     }
 
     public void deleteList(){
-        this.deleteInList.get(0).click();
+        deleteInList.get(0).click();
         confirm.click();
     }
 

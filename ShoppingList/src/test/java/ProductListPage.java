@@ -52,60 +52,60 @@ public class ProductListPage extends PageObject{
         Assert.assertTrue(plusButton.isDisplayed());
     }
 
-    public void setProductName(String productName){
-        this.productName.sendKeys(productName);
+    public void setProductName(String productNameToBeSet){
+        productName.sendKeys(productNameToBeSet);
     }
 
-    public void setItemPrice(String itemPrice){
-        this.itemPrice.sendKeys(itemPrice);
+    public void setItemPrice(String itemPriceToBeSet){
+        itemPrice.sendKeys(itemPriceToBeSet);
     }
 
-    public void setAmount(String amount){
-        this.amount.sendKeys(amount);
+    public void setAmount(String amountToBeSet){
+        amount.sendKeys(amountToBeSet);
     }
 
-    public void setComment(String comment){
-        this.comment.sendKeys(comment);
+    public void setComment(String commentToBeSet){
+        comment.sendKeys(commentToBeSet);
     }
 
     public void addProduct(){
-        this.plusButton.click();
+        plusButton.click();
     }
 
     public void openDimentionPage (){
-        this.amountDimension.click();
+        amountDimension.click();
     }
 
     public void openCategoryPage (){
-        this.category.click();
+        category.click();
     }
 
     public AndroidElement getItemPrice(){
-        return this.itemPrice;
+        return itemPrice;
     }
 
     public AndroidElement getPriceCurrency(){
-        return this.priceCurrency;
+        return priceCurrency;
     }
 
     public AndroidElement getAmount(){
-        return this.amount;
+        return amount;
     }
 
     public AndroidElement getAmountDimention(){
-        return this.amountDimension;
+        return amountDimension;
     }
 
     public AndroidElement getComment(){
-        return this.comment;
+        return comment;
     }
 
     public AndroidElement getCategory(){
-        return this.category;
+        return category;
     }
 
     public AndroidElement getTotalText(){
-        return this.totalText;
+        return totalText;
     }
 
     private AndroidElement getElement(String text, List<AndroidElement> list){
@@ -117,23 +117,23 @@ public class ProductListPage extends PageObject{
         return null;
     }
     public AndroidElement getCommentInList(String comment){
-        return getElement(comment, this.commentInList);
+        return getElement(comment, commentInList);
     }
 
     public AndroidElement getProductNameInList(String title){
-        return getElement(title, this.productNameInList);
+        return getElement(title, productNameInList);
     }
 
     public AndroidElement getAmountInList(String amount){
-        return getElement(amount, this.amountInList);
+        return getElement(amount, amountInList);
     }
 
     public AndroidElement getPriceInList(String price){
-        return getElement(price, this.priceInList);
+        return getElement(price, priceInList);
     }
 
     public List<AndroidElement> getProductNames(){
-        return this.productNameInList;
+        return productNameInList;
     }
 
 
@@ -142,7 +142,7 @@ public class ProductListPage extends PageObject{
     }
 
     public void clickThreePointButton() {
-        this.threePointButton.click();
+        threePointButton.click();
     }
 
     public void removeKeyboard(){
